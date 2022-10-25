@@ -13,3 +13,10 @@ pub mod solana_hello_world {
 
 #[derive(Accounts)]
 pub struct Initialize {}
+
+#[account]
+pub struct Message {
+    pub author: Pubkey,
+    pub timestamp: i64,
+    pub content: String,
+}
