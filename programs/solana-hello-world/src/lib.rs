@@ -6,7 +6,27 @@ declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 pub mod solana_hello_world {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    pub fn create_message(ctx: Context<CreateMessage>, content: String) -> Result<()> {
+        let message: &mut Account<Message> = &mut ctx.accounts.message;
+        let author: &Signer = &ctx.accounts.author;
+        let clock: Clock = Clock::get().unwrap();
+    
+        message.author = *author.key;
+        message.timestamp = clock.unix_timestamp;
+        message.content = content;
+    
+        Ok(())
+    }
+
+    pub fn update_message(ctx: Context<UpdateMessage>, content: String) -> Result<()> {
+        let message: &mut Account<Message> = &mut ctx.accounts.message;
+        let author: &Signer = &ctx.accounts.author;
+        let clock: Clock = Clock::get().unwrap();
+    
+        message.author = *author.key;
+        message.timestamp = clock.unix_timestamp;
+        message.content = content;
+      
         Ok(())
     }
 }
