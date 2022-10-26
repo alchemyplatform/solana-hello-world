@@ -12,7 +12,22 @@ pub mod solana_hello_world {
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct CreateMessage<'info> {
+    #[account(init, payer = author, space = 1000)]
+    pub message: Account<'info, Message>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct UpdateMessage<'info> {
+    #[account(mut)]
+    pub message: Account<'info, Message>,
+    #[account(mut)]
+    pub author: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
 
 #[account]
 pub struct Message {
