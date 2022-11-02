@@ -13,6 +13,7 @@ export default function Home() {
   const [messageAuthor, setMessageAuthor] = useState("");
   const [messageTime, setMessageTime] = useState(0);
   const [inputtedMessage, setInputtedMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const wallet = useAnchorWallet();
   const mounted = useIsMounted();
@@ -39,6 +40,7 @@ export default function Home() {
               className={styles.message_button}
               disabled={!inputtedMessage}
               onClick={async () => {
+                setLoading(true);
                 const deployedMessage = message
                   ? await updateMessage(inputtedMessage, wallet, messageAccount)
                   : await createMessage(
@@ -53,6 +55,7 @@ export default function Home() {
                   setMessageTime(deployedMessage.timestamp.toNumber() * 1000);
                   setInputtedMessage("");
                 }
+                setLoading(false);
               }}
             >
               {message ? "Update the Message!" : "Create a Message!"}
@@ -60,16 +63,24 @@ export default function Home() {
           </div>
         )}
 
-        {wallet && message && (
-          <div className={styles.card}>
-            <h2>Current Message: {message}</h2>
-            <h2>
-              Message Author: {messageAuthor.substring(0, 4)}
-              ...
-              {messageAuthor.slice(-4)}
-            </h2>
-            <h2>Time Published: {new Date(messageTime).toLocaleString()}</h2>
+        {loading ? (
+          <div className={styles.loader_bar}>
+            <h2> Loading</h2>
+            <div className={styles.loader} />
           </div>
+        ) : (
+          wallet &&
+          message && (
+            <div className={styles.card}>
+              <h2>Current Message: {message}</h2>
+              <h2>
+                Message Author: {messageAuthor.substring(0, 4)}
+                ...
+                {messageAuthor.slice(-4)}
+              </h2>
+              <h2>Time Published: {new Date(messageTime).toLocaleString()}</h2>
+            </div>
+          )
         )}
       </div>
     </div>
