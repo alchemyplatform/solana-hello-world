@@ -4,6 +4,7 @@ import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import useIsMounted from "./api/utils/useIsMounted";
 import createMessage from "./api/createMessage";
+import updateMessage from "./api/updateMessage";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
@@ -38,20 +39,23 @@ export default function Home() {
               className={styles.message_button}
               disabled={!inputtedMessage}
               onClick={async () => {
-                const message = await createMessage(
-                  inputtedMessage,
-                  wallet,
-                  messageAccount
-                );
-                if (message) {
-                  setMessage(message.content.toString());
-                  setMessageAuthor(message.author.toString());
-                  setMessageTime(message.timestamp.toNumber() * 1000);
+                const deployedMessage = message
+                  ? await updateMessage(inputtedMessage, wallet, messageAccount)
+                  : await createMessage(
+                      inputtedMessage,
+                      wallet,
+                      messageAccount
+                    );
+
+                if (deployedMessage) {
+                  setMessage(deployedMessage.content.toString());
+                  setMessageAuthor(deployedMessage.author.toString());
+                  setMessageTime(deployedMessage.timestamp.toNumber() * 1000);
                   setInputtedMessage("");
                 }
               }}
             >
-              Create a Message!
+              {message ? "Update the Message!" : "Create a Message!"}
             </button>
           </div>
         )}
